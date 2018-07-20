@@ -1,0 +1,10 @@
+---
+# vars file for ansible-glusterfs
+repos:
+  - rhel-7-server-rpms
+  - rh-gluster-3-for-rhel-7-server-rpms
+  - rh-gluster-3-nfs-for-rhel-7-server-rpms
+  - rh-gluster-3-samba-for-rhel-7-server-rpms
+
+glusterfs_srv_pkg: glusterfs-server
+glusterd_svc: glusterd

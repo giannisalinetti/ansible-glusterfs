@@ -1,0 +1,7 @@
+---
+- name: "Build Trusted Storage Pool"
+  command: "gluster peer probe {{ item }}"
+  loop: "{{ query('inventory_hostnames'), 'glusterfs' }}"
+  when: trusted_storage_server
+
+

@@ -1,0 +1,23 @@
+---
+# defaults file for ansible-glusterfs
+
+# Enables installation
+install_glusterfs: true
+
+# Firewall configuration
+use_firewalld: true
+use_iptables: false
+
+# Volumes configuration
+setup_volumes: true
+vg_name: vg_bricks
+pv_name:
+  - /dev/sdb
+  - /dev/sdc
+tp_name: thinpool
+tp_size: 10G
+lv_size: 2G
+brick_name:
+  - "brick-{{ ansible_hostname }}-01"
+volume_name: testvolume
+

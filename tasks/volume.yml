@@ -1,0 +1,8 @@
+---
+- name: "Create volume {{ volume_name }}"
+  gluster_volume:
+    state: present
+    name: "{{ volume_name }}"
+    bricks: "{{ pv_name | join(',') }}"
+    cluster: "{{ query('inventory_hostnames'), 'glusterfs' }}"
+  run_once: true

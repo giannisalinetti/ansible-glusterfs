@@ -1,0 +1,21 @@
+---
+- name: "Ensure firewalld package is installed"
+  yum:
+    name: firewalld
+    state: latest
+  when: use_firewalld
+
+- name: "Ensure firewalld service is running"
+  service:
+    name: firewalld
+    state: started
+    enabled: true
+  when: use_firewalld
+
+- name: "Configure ports"
+  firewalld:
+    service: glusterfs
+    immediate: true
+    permanent: true
+    state: enabled
+  when: use_firewalld

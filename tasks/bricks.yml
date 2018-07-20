@@ -1,0 +1,41 @@
+---
+- name: "Create physical volumes"
+  command: pvcreate "{{ item }}"
+  with_items: "{{ pv_name }}"
+  ignore_errors: true
+- name: "Create volume group"
+  lvg:
+    vg: "{{ vg_name }}"
+    pvs: "{{ pv_name | join(',') }}"
+- name: "Create the thin pool"
+  lvol:
+    vg: "{{ vg_name }}"
+    thinpool: "{{ tp_name }}"
+    size: "{{ tp_size }}"
+- name: "Create logical volumes"
+  lvol:
+    vg: "{{ vg_name }}"
+    lv: "{{ item }}"
+    thinpool: "{{ tp_name }}"
+    size: "{{ lv_size }}"
+  with_items: "{{ brick_name }}"
+- name: "Create xfs file system"
+  filesystem:
+    fstype: xfs
+    opts: -i size=512
+    dev: "/dev/{{ vg_name }}/{{ item }}"
+  with_items: "{{ brick_name }}"
+- name: "Create mount points"
+  file:
+    path: "/bricks/{{ item }}"
+    state: directory
+    mode: 0755
+  with_items: "{{ brick_name }}"
+- name: "Create fstab entry"
+  lineinfile:
+    path: /etc/fstab
+    line: /dev/{{ vg_name }}/{{ item }} /bricks/{{ item }} xfs defaults 1 2
+  with_items: "{{ brick_name }}"
+- name: "Activate mount point"
+  command: mount -a
+

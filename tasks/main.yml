@@ -1,0 +1,33 @@
+---
+# tasks file for ansible-glusterfs
+
+- name: "Configure repos"
+  include_tasks: repos.yml
+  when: install_glusterfs
+
+- name: "Install gluster server package"
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items: "{{ glusterfs_srv_pkg }}"
+  when: install_glusterfs
+
+- name: "Configure firewall ports"
+  include_tasks: firewall.yml
+  when: use_firewalld or use_iptables
+  when: install_glusterfs
+
+- name: "Start glusterd service"
+  service:
+    name: "{{ glusterd_svc }}"
+    state: started
+    enabled: true
+  when: install_glusterfs
+
+- name: "Create bricks"
+  include_tasks: bricks.yml
+  when: setup_volumes
+
+- name: "Create volume"
+  include_tasks: volume.yml
+  when: setup_volumes
